@@ -8,12 +8,12 @@ import DPLL
 
 solveInt4 :: IO ()
 solveInt4 = do
-  let formula = constraints 4
-  let cnfFormula = formulaToCNF formula
+  let wff = constraints 4
+  let cnfWff = wffToCNF wff
   putStrLn "Checking if addition is commutative for 4-bit integers..."
-  putStrLn $ "Variables: " ++ show (length (vars cnfFormula))
+  putStrLn $ "Variables: " ++ show (length (vars cnfWff))
   putStrLn "Solving with DPLL..."
-  case dpllAssigned (cnfFormula, []) of
+  case dpllAssigned (cnfWff, []) of
     Just assigned -> do
       putStrLn "SAT: Found a counterexample to commutativity!"
       putStrLn "Solution:"
@@ -33,7 +33,7 @@ solveSudoku = do
   putStr (printGrid grid)
   putStrLn ""
   let sudokuConstraints = sudoku grid
-  let cnfConstraints = formulaToCNF sudokuConstraints
+  let cnfConstraints = wffToCNF sudokuConstraints
   putStrLn $ "Variables: " ++ show (length (vars cnfConstraints))
   case dpllAssigned (cnfConstraints, []) of
     Just assigned -> do

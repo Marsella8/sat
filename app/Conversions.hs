@@ -1,17 +1,17 @@
-module Conversions (formulaToCNF, formulaToNNF, nnfToCNF) where
+module Conversions (wffToCNF, wffToNNF, nnfToCNF) where
 
 import Prop
 
-formulaToNNF :: Formula -> NNF
-formulaToNNF (V x)           = NLit (Pos x)
-formulaToNNF (Not f)         = neg (formulaToNNF f)
-formulaToNNF (Or a b)        = NOr (formulaToNNF a) (formulaToNNF b)
-formulaToNNF (And a b)       = NAnd (formulaToNNF a) (formulaToNNF b)
-formulaToNNF (Implies a b)   = NOr (neg (formulaToNNF a)) (formulaToNNF b)
-formulaToNNF (Coimplies a b) = NAnd (NOr (neg ga) gb) (NOr (neg gb) ga)
-  where ga = formulaToNNF a; gb = formulaToNNF b
-formulaToNNF (Xor a b)       = NAnd (NOr ga gb) (NOr (neg ga) (neg gb))
-  where ga = formulaToNNF a; gb = formulaToNNF b
+wffToNNF :: WFF -> NNF
+wffToNNF (V x)           = NLit (Pos x)
+wffToNNF (Not f)         = neg (wffToNNF f)
+wffToNNF (Or a b)        = NOr (wffToNNF a) (wffToNNF b)
+wffToNNF (And a b)       = NAnd (wffToNNF a) (wffToNNF b)
+wffToNNF (Implies a b)   = NOr (neg (wffToNNF a)) (wffToNNF b)
+wffToNNF (Coimplies a b) = NAnd (NOr (neg ga) gb) (NOr (neg gb) ga)
+  where ga = wffToNNF a; gb = wffToNNF b
+wffToNNF (Xor a b)       = NAnd (NOr ga gb) (NOr (neg ga) (neg gb))
+  where ga = wffToNNF a; gb = wffToNNF b
 
 nnfToCNF :: NNF -> CNF
 nnfToCNF = cnf . go
@@ -21,5 +21,5 @@ nnfToCNF = cnf . go
     go (NAnd a b) = go a ++ go b
     go (NOr a b)  = [c1 <> c2 | c1 <- go a, c2 <- go b] -- cartesian product!!! bad!!! tseitin addresses this
 
-formulaToCNF :: Formula -> CNF
-formulaToCNF = nnfToCNF . formulaToNNF
+wffToCNF :: WFF -> CNF
+wffToCNF = nnfToCNF . wffToNNF

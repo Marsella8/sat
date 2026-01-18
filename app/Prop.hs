@@ -6,7 +6,7 @@ module Prop
   , NNF(..)
   , Negatable(..)
   , HasVars(..)
-  , Formula(..), var, and, or, xor, not
+  , WFF(..), var, and, or, xor, not
   ) where
 
 import Prelude hiding (and, or, not)
@@ -90,19 +90,19 @@ instance Show NNF where
     show (NOr a b)  = "(" ++ show a ++ " ∨ " ++ show b ++ ")"
     show (NAnd a b) = "(" ++ show a ++ " ∧ " ++ show b ++ ")"
 
--- Logic Formulas
+-- Logic Wffs
 
-data Formula
+data WFF
   = V Var
-  | Not       Formula
-  | Or        Formula Formula
-  | And       Formula Formula
-  | Xor       Formula Formula
-  | Implies   Formula Formula
-  | Coimplies Formula Formula
+  | Not       WFF
+  | Or        WFF WFF
+  | And       WFF WFF
+  | Xor       WFF WFF
+  | Implies   WFF WFF
+  | Coimplies WFF WFF
   deriving (Eq, Ord)
 
-instance Show Formula where
+instance Show WFF where
   show (V x)           = show x
   show (Not a)         = "¬" ++ show a
   show (Or a b)        = "(" ++ show a ++ " ∨ " ++ show b ++ ")"
@@ -111,24 +111,24 @@ instance Show Formula where
   show (Implies a b)   = "(" ++ show a ++ " → " ++ show b ++ ")"
   show (Coimplies a b) = "(" ++ show a ++ " ↔ " ++ show b ++ ")"
 
-var :: String -> Formula
+var :: String -> WFF
 var = V . Var
 
-and :: [Formula] -> Formula
+and :: [WFF] -> WFF
 and []  = error "and: empty"
 and [f] = f
 and fs  = foldl1 And fs
 
-or :: [Formula] -> Formula
+or :: [WFF] -> WFF
 or []  = error "or: empty"
 or [f] = f
 or fs  = foldl1 Or fs
 
-xor :: [Formula] -> Formula
+xor :: [WFF] -> WFF
 xor []  = error "xor: empty"
 xor [f] = f
 xor fs  = foldl1 Xor fs
 
-not :: Formula -> Formula
+not :: WFF -> WFF
 not (Not a) = a
 not a = Not a

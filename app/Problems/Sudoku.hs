@@ -6,7 +6,7 @@ import Prop
 data SudokuGrid = SudokuGrid [[Maybe Int]]
   deriving (Eq, Show)
 
-sudoku :: SudokuGrid -> Formula
+sudoku :: SudokuGrid -> WFF
 sudoku (SudokuGrid grid) = and (givenConstraints ++ cellConstraints ++ rowConstraints ++ colConstraints ++ boxConstraints)
   where
     cell i j k = var ("cell_" ++ show i ++ show j ++ show k)
